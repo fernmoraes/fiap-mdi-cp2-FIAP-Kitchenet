@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { agendarNotificacaoPedidoPronto } from './notifications';
 
 const PEDIDOS_KEY = '@kitchenet_pedidos';
 
@@ -30,15 +31,18 @@ async function atualizarPreparando(pedidos) {
 
 export async function adicionarPedido(itens) {
   const pedidos = await lerPedidos();
+  const codigo = gerarCodigo();
+  const tempoPreparacao = 15;
   pedidos.push({
     id: String(Date.now()),
-    codigo: gerarCodigo(),
+    codigo,
     itens,
     data: new Date().toLocaleDateString('pt-BR'),
     status: 'preparando',
-    preparandoAte: Date.now() + 15000,
+    preparandoAte: Date.now() + tempoPreparacao * 1000,
   });
   await salvarPedidos(pedidos);
+  await agendarNotificacaoPedidoPronto(codigo, tempoPreparacao);
 }
 
 export async function concluirPedido(id) {

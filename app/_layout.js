@@ -3,6 +3,7 @@ import { View, ActivityIndicator } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { AppDataProvider } from "./context/AppDataContext";
+import { solicitarPermissaoNotificacoes } from "./notifications";
 
 function RootNavigator() {
   const { carregando, usuario } = useAuth();
@@ -37,6 +38,10 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    solicitarPermissaoNotificacoes();
+  }, []);
+
   return (
     <AuthProvider>
       <AppDataProvider>
