@@ -15,6 +15,19 @@ async function salvarPedidos(pedidos) {
   await AsyncStorage.setItem(PEDIDOS_KEY, JSON.stringify(pedidos));
 }
 
+async function atualizarPreparando(pedidos) {
+  const agora = Date.now();
+  let mudou = false;
+  pedidos.forEach(p => {
+    if (p.status === 'preparando' && p.preparandoAte && agora >= p.preparandoAte) {
+      p.status = 'ativo';
+      mudou = true;
+    }
+  });
+  if (mudou) await salvarPedidos(pedidos);
+  return pedidos;
+}
+
 export async function adicionarPedido(itens) {
   const pedidos = await lerPedidos();
   pedidos.push({
@@ -22,7 +35,8 @@ export async function adicionarPedido(itens) {
     codigo: gerarCodigo(),
     itens,
     data: new Date().toLocaleDateString('pt-BR'),
-    status: 'ativo',
+    status: 'preparando',
+    preparandoAte: Date.now() + 15000,
   });
   await salvarPedidos(pedidos);
 }
@@ -37,10 +51,6 @@ export async function concluirPedido(id) {
 }
 
 export async function getPedidos() {
-  return lerPedidos();
-}
-
-export async function getPedidoAtivo() {
   const pedidos = await lerPedidos();
-  return [...pedidos].reverse().find(p => p.status === 'ativo') || null;
+  return atualizarPreparando(pedidos);
 }
