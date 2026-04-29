@@ -1,21 +1,21 @@
 import { useEffect, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { isAuthenticated, logout } from './auth';
-import { getPedidos } from './pedidos';
+import { isAuthenticated, logout } from '../auth';
+import { getPedidos } from '../pedidos';
 
-export default function Sobre() {
+export default function Perfil() {
   const router = useRouter();
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push('/');
+      router.replace('/(auth)/');
     }
   }, []);
 
   const deslogar = () => {
     logout();
-    router.push('/');
+    router.replace('/(auth)/');
   };
 
   const [pedidos, setPedidos] = useState([]);
@@ -59,7 +59,7 @@ export default function Sobre() {
         <Text style={styles.botaoPedirTexto}>Pedir</Text>
       </TouchableOpacity>
 
-      <View style={{flex: 1}} />
+      <View style={{ flex: 1 }} />
 
       <TouchableOpacity style={styles.botaoDeslogar} onPress={deslogar}>
         <Text style={styles.botaoDeslogarTexto}>Sair</Text>
@@ -67,9 +67,10 @@ export default function Sobre() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container:  { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#262626', padding: 16 },
-  titulo:     { fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: '#F23064' },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#262626', padding: 16 },
+  titulo: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: '#F23064' },
   pedidosContainer: { width: '100%', marginBottom: 20 },
   pedidosTitulo: { fontSize: 20, fontWeight: 'bold', color: '#F23064', marginBottom: 10 },
   pedidosList: { maxHeight: 200 },

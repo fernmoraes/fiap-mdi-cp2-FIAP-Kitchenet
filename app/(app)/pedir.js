@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Modal, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { adicionarPedido } from './pedidos';
+import { adicionarPedido } from '../pedidos';
 
 export default function Pedir() {
   const router = useRouter();
@@ -11,19 +11,19 @@ export default function Pedir() {
 
   const itensPorTipo = {
     Bebidas: [
-      { id: '1', nome: 'Refrigerante', preco: 5.00, imagem: require('../assets/fotoscardapio/refrigerante.jpg') },
-      { id: '2', nome: 'Suco', preco: 4.00, imagem: require('../assets/fotoscardapio/suco.jpg') },
-      { id: '3', nome: 'Água', preco: 2.00, imagem: require('../assets/fotoscardapio/agua.jpg') },
+      { id: '1', nome: 'Refrigerante', preco: 5.00, imagem: require('../../assets/fotoscardapio/refrigerante.jpg') },
+      { id: '2', nome: 'Suco', preco: 4.00, imagem: require('../../assets/fotoscardapio/suco.jpg') },
+      { id: '3', nome: 'Água', preco: 2.00, imagem: require('../../assets/fotoscardapio/agua.jpg') },
     ],
     Lanches: [
-      { id: '4', nome: 'Coxinha', preco: 8.00, imagem: require('../assets/fotoscardapio/coxinha.jpg') },
-      { id: '5', nome: 'Esfiha', preco: 10.00, imagem: require('../assets/fotoscardapio/esfiha.jpg') },
-      { id: '6', nome: 'Pão de Queijo', preco: 6.00, imagem: require('../assets/fotoscardapio/paodequeijo.jpg') },
+      { id: '4', nome: 'Coxinha', preco: 8.00, imagem: require('../../assets/fotoscardapio/coxinha.jpg') },
+      { id: '5', nome: 'Esfiha', preco: 10.00, imagem: require('../../assets/fotoscardapio/esfiha.jpg') },
+      { id: '6', nome: 'Pão de Queijo', preco: 6.00, imagem: require('../../assets/fotoscardapio/paodequeijo.jpg') },
     ],
     Doces: [
-      { id: '10', nome: 'Sorvete', preco: 7.00, imagem: require('../assets/fotoscardapio/sorvete.jpg') },
-      { id: '11', nome: 'Bolo', preco: 12.00, imagem: require('../assets/fotoscardapio/bolo.jpg') },
-      { id: '12', nome: 'Chocolate', preco: 3.00, imagem: require('../assets/fotoscardapio/chocolate.jpg') },
+      { id: '10', nome: 'Sorvete', preco: 7.00, imagem: require('../../assets/fotoscardapio/sorvete.jpg') },
+      { id: '11', nome: 'Bolo', preco: 12.00, imagem: require('../../assets/fotoscardapio/bolo.jpg') },
+      { id: '12', nome: 'Chocolate', preco: 3.00, imagem: require('../../assets/fotoscardapio/chocolate.jpg') },
     ],
   };
 

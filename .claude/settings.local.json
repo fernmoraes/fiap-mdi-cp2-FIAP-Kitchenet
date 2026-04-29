@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"c:/Trabalho/Faculdade/Java/Aulas/CP2_Mobile/FIAP-Kitchenet/app/\\(auth\\)\")",
+      "Bash(mkdir -p \"c:/Trabalho/Faculdade/Java/Aulas/CP2_Mobile/FIAP-Kitchenet/app/\\(app\\)\")"
+    ]
+  }
+}

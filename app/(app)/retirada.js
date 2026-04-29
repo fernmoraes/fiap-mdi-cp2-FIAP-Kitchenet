@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { isAuthenticated } from './auth';
-import { getUltimoPedido } from './pedidos';
+import { isAuthenticated } from '../auth';
+import { getUltimoPedido } from '../pedidos';
 
 export default function Retirada() {
   const router = useRouter();
@@ -10,7 +10,7 @@ export default function Retirada() {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push('/');
+      router.replace('/(auth)/');
     }
   }, []);
 
