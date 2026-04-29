@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Modal, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { adicionarPedido } from '../pedidos';
+import { verificarSessao } from '../auth';
 
 export default function Pedir() {
   const router = useRouter();
+
+  useEffect(() => {
+    verificarSessao().then(user => {
+      if (!user) router.replace('/(auth)/');
+    });
+  }, []);
   const [carrinho, setCarrinho] = useState([]);
   const [modalVisivel, setModalVisivel] = useState(false);
   const [pagamentoConfirmado, setPagamentoConfirmado] = useState(false);
@@ -56,8 +63,8 @@ export default function Pedir() {
     setModalVisivel(true);
   };
 
-  const confirmarPagamento = (metodo) => {
-    adicionarPedido(carrinho);
+  const confirmarPagamento = async (metodo) => {
+    await adicionarPedido(carrinho);
     setPagamentoConfirmado(true);
   };
 

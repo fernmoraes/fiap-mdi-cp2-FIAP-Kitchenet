@@ -18,6 +18,10 @@ export default function AuthLayout() {
           tabBarIcon: ({ color }) => <Ionicons name="id-card-outline" size={24} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="registro"
+        options={{ href: null, title: 'Criar Conta' }}
+      />
     </Tabs>
   );
 }

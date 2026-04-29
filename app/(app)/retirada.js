@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { isAuthenticated } from '../auth';
+import { verificarSessao } from '../auth';
 import { getPedidos, getPedidoAtivo, concluirPedido } from '../pedidos';
 
 export default function Retirada() {
@@ -11,31 +11,34 @@ export default function Retirada() {
   const [todosPedidos, setTodosPedidos] = useState([]);
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace('/(auth)/');
-    }
+    verificarSessao().then(user => {
+      if (!user) router.replace('/(auth)/');
+    });
   }, []);
 
   useFocusEffect(
     useCallback(() => {
-      const todos = [...getPedidos()].reverse();
-      setTodosPedidos(todos);
+      const carregar = async () => {
+        const todos = await getPedidos();
+        setTodosPedidos([...todos].reverse());
 
-      if (idParam) {
-        const encontrado = getPedidos().find(p => p.id === idParam);
-        setPedidoSelecionado(encontrado || getPedidoAtivo());
-      } else {
-        setPedidoSelecionado(getPedidoAtivo());
-      }
+        if (idParam) {
+          const encontrado = todos.find(p => p.id === idParam);
+          setPedidoSelecionado(encontrado || await getPedidoAtivo());
+        } else {
+          setPedidoSelecionado(await getPedidoAtivo());
+        }
+      };
+      carregar();
     }, [idParam])
   );
 
-  const handleConcluir = () => {
+  const handleConcluir = async () => {
     if (!pedidoSelecionado || pedidoSelecionado.status !== 'ativo') return;
-    concluirPedido(pedidoSelecionado.id);
-    const todos = [...getPedidos()].reverse();
-    setTodosPedidos(todos);
-    const atualizado = getPedidos().find(p => p.id === pedidoSelecionado.id);
+    await concluirPedido(pedidoSelecionado.id);
+    const todos = await getPedidos();
+    setTodosPedidos([...todos].reverse());
+    const atualizado = todos.find(p => p.id === pedidoSelecionado.id);
     setPedidoSelecionado({ ...atualizado });
   };
 

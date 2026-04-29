@@ -1,49 +1,68 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { useRouter } from 'expo-router';
 import { login } from '../auth';
 
 export default function Login() {
   const router = useRouter();
-  const [rm, setRm] = useState('');
+  const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState('');
+  const [carregando, setCarregando] = useState(false);
 
-  const entrar = () => {
-    if (!rm.trim() || !senha.trim()) {
-      alert('Por favor, preencha RM e senha antes de entrar.');
+  const entrar = async () => {
+    setErro('');
+    if (!email.trim() || !senha.trim()) {
+      setErro('Preencha o email e a senha.');
       return;
     }
-    login();
-    router.replace('/(app)/perfil');
+    setCarregando(true);
+    try {
+      await login(email.trim().toLowerCase(), senha);
+      router.replace('/(app)/perfil');
+    } catch (e) {
+      setErro(e.message);
+    } finally {
+      setCarregando(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.loginCard}>
+      <View style={styles.card}>
         <Text style={styles.titulo}>LOGIN</Text>
 
-        <Text style={styles.label}>RM</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="Insira seu RM"
+          placeholder="rm000000@fiap.com.br"
           placeholderTextColor="#8C8C8C"
-          value={rm}
-          onChangeText={setRm}
-          keyboardType="numeric"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
         />
 
         <Text style={styles.label}>Senha</Text>
         <TextInput
           style={styles.input}
-          placeholder="Insira sua senha"
+          placeholder="Mínimo 6 caracteres"
           placeholderTextColor="#8C8C8C"
           secureTextEntry
           value={senha}
           onChangeText={setSenha}
         />
 
-        <TouchableOpacity style={styles.botao} onPress={entrar}>
-          <Text style={styles.botaoTexto}>Entrar</Text>
+        {erro ? <Text style={styles.erro}>{erro}</Text> : null}
+
+        <TouchableOpacity style={styles.botao} onPress={entrar} disabled={carregando}>
+          {carregando
+            ? <ActivityIndicator color="#fff" />
+            : <Text style={styles.botaoTexto}>Entrar</Text>}
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.linkRegistro} onPress={() => router.push('/(auth)/registro')}>
+          <Text style={styles.linkTexto}>Não tem conta? <Text style={styles.linkDestaque}>Criar conta</Text></Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -58,16 +77,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
   },
-  loginCard: {
+  card: {
     width: '100%',
     maxWidth: 380,
     backgroundColor: '#2c2c2c',
     borderRadius: 16,
     padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
     elevation: 6,
   },
   titulo: {
@@ -92,6 +107,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
   },
+  erro: {
+    color: '#F23064',
+    fontSize: 13,
+    marginTop: 12,
+    textAlign: 'center',
+  },
   botao: {
     backgroundColor: '#F23064',
     paddingVertical: 14,
@@ -103,5 +124,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '700',
+  },
+  linkRegistro: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  linkTexto: {
+    color: '#8C8C8C',
+    fontSize: 14,
+  },
+  linkDestaque: {
+    color: '#F23064',
+    fontWeight: 'bold',
   },
 });

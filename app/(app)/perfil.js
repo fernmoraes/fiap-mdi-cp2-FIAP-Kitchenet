@@ -1,20 +1,20 @@
 import { useEffect, useState, useCallback } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { isAuthenticated, logout } from '../auth';
+import { verificarSessao, logout } from '../auth';
 import { getPedidos } from '../pedidos';
 
 export default function Perfil() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace('/(auth)/');
-    }
+    verificarSessao().then(user => {
+      if (!user) router.replace('/(auth)/');
+    });
   }, []);
 
-  const deslogar = () => {
-    logout();
+  const deslogar = async () => {
+    await logout();
     router.replace('/(auth)/');
   };
 
@@ -22,7 +22,7 @@ export default function Perfil() {
 
   useFocusEffect(
     useCallback(() => {
-      setPedidos([...getPedidos()].reverse());
+      getPedidos().then(lista => setPedidos([...lista].reverse()));
     }, [])
   );
 
