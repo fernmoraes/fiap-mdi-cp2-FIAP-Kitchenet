@@ -1,30 +1,47 @@
-import { useEffect, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
-import { verificarSessao } from './auth';
+import { useEffect } from "react";
+import { View, ActivityIndicator } from "react-native";
+import { Stack, useRouter } from "expo-router";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AppDataProvider } from "./context/AppDataContext";
 
-export default function RootLayout() {
+function RootNavigator() {
+  const { carregando, usuario } = useAuth();
   const router = useRouter();
-  const [verificando, setVerificando] = useState(true);
 
   useEffect(() => {
-    verificarSessao().then(user => {
-      if (user) {
-        router.replace('/(app)/perfil');
+    if (!carregando) {
+      if (usuario) {
+        router.replace("/(app)/perfil");
       } else {
-        router.replace('/(auth)/');
+        router.replace("/(auth)/");
       }
-      setVerificando(false);
-    });
-  }, []);
+    }
+  }, [carregando]);
 
-  if (verificando) {
+  if (carregando) {
     return (
-      <View style={{ flex: 1, backgroundColor: '#262626', justifyContent: 'center', alignItems: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#262626",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <ActivityIndicator size="large" color="#F23064" />
       </View>
     );
   }
 
   return <Stack screenOptions={{ headerShown: false }} />;
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <AppDataProvider>
+        <RootNavigator />
+      </AppDataProvider>
+    </AuthProvider>
+  );
 }
