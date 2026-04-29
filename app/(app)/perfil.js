@@ -22,21 +22,31 @@ export default function Perfil() {
 
   useFocusEffect(
     useCallback(() => {
-      setPedidos([...getPedidos()]);
+      setPedidos([...getPedidos()].reverse());
     }, [])
   );
 
   const renderPedido = ({ item }) => {
     const resumo = item.itens.map(c => c.item.nome).join(', ');
     const total = item.itens.reduce((acc, c) => acc + c.item.preco * c.quantidade, 0);
+    const concluido = item.status === 'concluido';
     return (
-      <View style={styles.pedidoItem}>
+      <TouchableOpacity
+        style={styles.pedidoItem}
+        onPress={() => router.push({ pathname: '/(app)/retirada', params: { id: item.id } })}
+        activeOpacity={0.7}
+      >
         <View style={{ flex: 1 }}>
           <Text style={styles.pedidoNome}>{resumo}</Text>
           <Text style={styles.pedidoData}>{item.data}</Text>
         </View>
-        <Text style={styles.pedidoStatus}>R$ {total.toFixed(2)}</Text>
-      </View>
+        <View style={styles.pedidoRight}>
+          <Text style={styles.pedidoStatus}>R$ {total.toFixed(2)}</Text>
+          <View style={[styles.statusBadge, concluido ? styles.statusConcluido : styles.statusAtivo]}>
+            <Text style={styles.statusTexto}>{concluido ? 'Concluído' : 'Ativo'}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -73,11 +83,16 @@ const styles = StyleSheet.create({
   titulo: { fontSize: 28, fontWeight: 'bold', marginBottom: 20, color: '#F23064' },
   pedidosContainer: { width: '100%', marginBottom: 20 },
   pedidosTitulo: { fontSize: 20, fontWeight: 'bold', color: '#F23064', marginBottom: 10 },
-  pedidosList: { maxHeight: 200 },
-  pedidoItem: { backgroundColor: '#404040', padding: 12, borderRadius: 8, marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between' },
+  pedidosList: { maxHeight: 260 },
+  pedidoItem: { backgroundColor: '#404040', padding: 12, borderRadius: 8, marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   pedidoNome: { color: '#fff', fontSize: 14 },
   pedidoData: { color: '#8C8C8C', fontSize: 12, marginTop: 2 },
+  pedidoRight: { alignItems: 'flex-end', gap: 6 },
   pedidoStatus: { color: '#F23064', fontSize: 14, fontWeight: 'bold' },
+  statusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12 },
+  statusAtivo: { backgroundColor: '#F23064' },
+  statusConcluido: { backgroundColor: '#4CAF50' },
+  statusTexto: { color: '#fff', fontSize: 11, fontWeight: 'bold' },
   semPedidos: { color: '#8C8C8C', textAlign: 'center', marginTop: 10 },
   botaoDeslogar: { backgroundColor: '#8C8C8C', paddingVertical: 12, borderRadius: 8, alignItems: 'center', width: '100%', marginTop: 12 },
   botaoDeslogarTexto: { color: '#fff', fontWeight: 'bold' },

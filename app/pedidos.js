@@ -10,13 +10,19 @@ export function adicionarPedido(itens) {
     codigo: gerarCodigo(),
     itens,
     data: new Date().toLocaleDateString('pt-BR'),
+    status: 'ativo',
   });
+}
+
+export function concluirPedido(id) {
+  const pedido = listaPedidos.find(p => p.id === id);
+  if (pedido) pedido.status = 'concluido';
 }
 
 export function getPedidos() {
   return listaPedidos;
 }
 
-export function getUltimoPedido() {
-  return listaPedidos[listaPedidos.length - 1] || null;
+export function getPedidoAtivo() {
+  return [...listaPedidos].reverse().find(p => p.status === 'ativo') || null;
 }
