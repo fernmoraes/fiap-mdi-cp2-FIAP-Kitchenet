@@ -14,9 +14,9 @@ function RootNavigator() {
   useEffect(() => {
     if (!carregando) {
       if (usuario) {
-        router.replace("/(app)/perfil");
+        router.replace("/(tabs)/perfil");
       } else {
-        router.replace("/(auth)/");
+        router.replace("/(auth)/login");
       }
     }
   }, [carregando]);

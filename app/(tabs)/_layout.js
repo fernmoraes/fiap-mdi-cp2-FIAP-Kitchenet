@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 
-export default function AuthLayout() {
+export default function AppLayout() {
   const { colors } = useTheme();
 
   return (
@@ -16,18 +16,26 @@ export default function AuthLayout() {
       headerTitleStyle: { fontWeight: 'bold' },
     }}>
       <Tabs.Screen
-        name="login"
+        name="perfil"
         options={{
-          title: 'Login',
-          tabBarIcon: ({ color }) => <Ionicons name="id-card-outline" size={24} color={color} />,
+          title: 'Perfil',
+          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="cadastro"
-        options={{ href: null, title: 'Criar Conta' }}
+        name="pedir"
+        options={{
+          title: 'Pedir',
+          tabBarIcon: ({ color }) => <Ionicons name="restaurant-outline" size={24} color={color} />,
+        }}
       />
-      <Tabs.Screen name="index" options={{ href: null }} />
-      <Tabs.Screen name="registro" options={{ href: null }} />
+      <Tabs.Screen
+        name="retirada"
+        options={{
+          title: 'Retirada',
+          tabBarIcon: ({ color }) => <Ionicons name="bag-check-outline" size={24} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
