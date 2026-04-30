@@ -1,19 +1,23 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Switch,
 } from "react-native";
 import { useRouter, useFocusEffect } from "expo-router";
 import { useAuth } from "../context/AuthContext";
 import { useAppData } from "../context/AppDataContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Perfil() {
   const router = useRouter();
   const { usuario, logout } = useAuth();
   const { pedidos, recarregarPedidos } = useAppData();
+  const { colors, isDark, toggleTheme } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   useFocusEffect(
     useCallback(() => {
@@ -94,6 +98,18 @@ export default function Perfil() {
 
       <View style={{ flex: 1 }} />
 
+      <View style={styles.temaContainer}>
+        <Text style={styles.temaLabel}>
+          {isDark ? "Tema Escuro" : "Tema Claro"}
+        </Text>
+        <Switch
+          value={isDark}
+          onValueChange={toggleTheme}
+          trackColor={{ false: colors.border, true: colors.primary }}
+          thumbColor="#FFFFFF"
+        />
+      </View>
+
       <TouchableOpacity style={styles.botaoDeslogar} onPress={deslogar}>
         <Text style={styles.botaoDeslogarTexto}>Sair</Text>
       </TouchableOpacity>
@@ -101,62 +117,74 @@ export default function Perfil() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#262626",
-    padding: 16,
-  },
-  titulo: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 4,
-    color: "#F23064",
-  },
-  nomeUsuario: { fontSize: 15, color: "#8C8C8C", marginBottom: 20 },
-  pedidosContainer: { width: "100%", marginBottom: 20 },
-  pedidosTitulo: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#F23064",
-    marginBottom: 10,
-  },
-  pedidosList: { maxHeight: 260 },
-  pedidoItem: {
-    backgroundColor: "#404040",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  pedidoNome: { color: "#fff", fontSize: 14 },
-  pedidoData: { color: "#8C8C8C", fontSize: 12, marginTop: 2 },
-  pedidoRight: { alignItems: "flex-end", gap: 6 },
-  pedidoValor: { color: "#F23064", fontSize: 14, fontWeight: "bold" },
-  statusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12 },
-  statusAtivo: { backgroundColor: "#F23064" },
-  statusConcluido: { backgroundColor: "#4CAF50" },
-  statusTexto: { color: "#fff", fontSize: 11, fontWeight: "bold" },
-  semPedidos: { color: "#8C8C8C", textAlign: "center", marginTop: 10 },
-  botaoDeslogar: {
-    backgroundColor: "#8C8C8C",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    width: "100%",
-    marginTop: 12,
-  },
-  botaoDeslogarTexto: { color: "#fff", fontWeight: "bold" },
-  botaoPedir: {
-    backgroundColor: "#F23064",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginTop: 12,
-  },
-  botaoPedirTexto: { color: "#fff", fontWeight: "bold", fontSize: 18 },
-});
+const makeStyles = (c) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.background,
+      padding: 16,
+    },
+    titulo: {
+      fontSize: 28,
+      fontWeight: "bold",
+      marginBottom: 4,
+      color: c.primary,
+    },
+    nomeUsuario: { fontSize: 15, color: c.textSecondary, marginBottom: 20 },
+    pedidosContainer: { width: "100%", marginBottom: 20 },
+    pedidosTitulo: {
+      fontSize: 20,
+      fontWeight: "bold",
+      color: c.primary,
+      marginBottom: 10,
+    },
+    pedidosList: { maxHeight: 260 },
+    pedidoItem: {
+      backgroundColor: c.surface,
+      padding: 12,
+      borderRadius: 8,
+      marginBottom: 8,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      elevation: 2,
+    },
+    pedidoNome: { color: c.text, fontSize: 14 },
+    pedidoData: { color: c.textSecondary, fontSize: 12, marginTop: 2 },
+    pedidoRight: { alignItems: "flex-end", gap: 6 },
+    pedidoValor: { color: c.primary, fontSize: 14, fontWeight: "bold" },
+    statusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12 },
+    statusAtivo: { backgroundColor: c.primary },
+    statusConcluido: { backgroundColor: "#4CAF50" },
+    statusTexto: { color: "#fff", fontSize: 11, fontWeight: "bold" },
+    semPedidos: { color: c.textSecondary, textAlign: "center", marginTop: 10 },
+    temaContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      width: "100%",
+      paddingVertical: 12,
+      paddingHorizontal: 4,
+      marginBottom: 8,
+    },
+    temaLabel: { fontSize: 16, color: c.text },
+    botaoDeslogar: {
+      backgroundColor: c.disabled,
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: "center",
+      width: "100%",
+      marginTop: 4,
+    },
+    botaoDeslogarTexto: { color: "#fff", fontWeight: "bold" },
+    botaoPedir: {
+      backgroundColor: c.primary,
+      paddingVertical: 15,
+      paddingHorizontal: 20,
+      borderRadius: 8,
+      marginTop: 12,
+    },
+    botaoPedirTexto: { color: "#fff", fontWeight: "bold", fontSize: 18 },
+  });

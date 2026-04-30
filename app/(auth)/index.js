@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,14 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Login() {
   const router = useRouter();
   const { login } = useAuth();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
@@ -44,7 +48,7 @@ export default function Login() {
         <TextInput
           style={styles.input}
           placeholder="rm000000@fiap.com.br"
-          placeholderTextColor="#8C8C8C"
+          placeholderTextColor={colors.placeholder}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -55,7 +59,7 @@ export default function Login() {
         <TextInput
           style={styles.input}
           placeholder="Mínimo 6 caracteres"
-          placeholderTextColor="#8C8C8C"
+          placeholderTextColor={colors.placeholder}
           secureTextEntry
           value={senha}
           onChangeText={setSenha}
@@ -88,72 +92,73 @@ export default function Login() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#404040",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 16,
-  },
-  card: {
-    width: "100%",
-    maxWidth: 380,
-    backgroundColor: "#2c2c2c",
-    borderRadius: 16,
-    padding: 24,
-    elevation: 6,
-  },
-  titulo: {
-    fontSize: 30,
-    fontWeight: "bold",
-    color: "#F23064",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 14,
-    color: "#8C8C8C",
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    backgroundColor: "#404040",
-    color: "#fff",
-    borderColor: "#8C8C8C",
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-  },
-  erro: {
-    color: "#F23064",
-    fontSize: 13,
-    marginTop: 12,
-    textAlign: "center",
-  },
-  botao: {
-    backgroundColor: "#F23064",
-    paddingVertical: 14,
-    borderRadius: 10,
-    marginTop: 24,
-    alignItems: "center",
-  },
-  botaoTexto: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  linkRegistro: {
-    marginTop: 16,
-    alignItems: "center",
-  },
-  linkTexto: {
-    color: "#8C8C8C",
-    fontSize: 14,
-  },
-  linkDestaque: {
-    color: "#F23064",
-    fontWeight: "bold",
-  },
-});
+const makeStyles = (c) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: c.background,
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 16,
+    },
+    card: {
+      width: "100%",
+      maxWidth: 380,
+      backgroundColor: c.card,
+      borderRadius: 16,
+      padding: 24,
+      elevation: 6,
+    },
+    titulo: {
+      fontSize: 30,
+      fontWeight: "bold",
+      color: c.primary,
+      textAlign: "center",
+      marginBottom: 20,
+    },
+    label: {
+      fontSize: 14,
+      color: c.textSecondary,
+      marginBottom: 8,
+      marginTop: 12,
+    },
+    input: {
+      backgroundColor: c.inputBackground,
+      color: c.text,
+      borderColor: c.border,
+      borderWidth: 1,
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+    },
+    erro: {
+      color: c.primary,
+      fontSize: 13,
+      marginTop: 12,
+      textAlign: "center",
+    },
+    botao: {
+      backgroundColor: c.primary,
+      paddingVertical: 14,
+      borderRadius: 10,
+      marginTop: 24,
+      alignItems: "center",
+    },
+    botaoTexto: {
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: "700",
+    },
+    linkRegistro: {
+      marginTop: 16,
+      alignItems: "center",
+    },
+    linkTexto: {
+      color: c.textSecondary,
+      fontSize: 14,
+    },
+    linkDestaque: {
+      color: c.primary,
+      fontWeight: "bold",
+    },
+  });

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,15 @@ import {
 } from "react-native";
 import { useRouter, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useAppData } from "../context/AppDataContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Retirada() {
   const router = useRouter();
   const { id: idParam } = useLocalSearchParams();
   const { pedidos, recarregarPedidos, concluirPedido } = useAppData();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   const [pedidoSelecionado, setPedidoSelecionado] = useState(null);
   const [segundosRestantes, setSegundosRestantes] = useState(null);
 
@@ -33,7 +37,6 @@ export default function Retirada() {
     }, [idParam])
   );
 
-  // Countdown para pedidos em "preparando"
   useEffect(() => {
     if (!pedidoSelecionado || pedidoSelecionado.status !== "preparando") {
       setSegundosRestantes(null);
@@ -220,144 +223,140 @@ export default function Retirada() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#262626" },
-  scrollContent: { padding: 16, paddingBottom: 32 },
-  titulo: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#F23064",
-    marginBottom: 16,
-    textAlign: "center",
-  },
-
-  card: {
-    backgroundColor: "#404040",
-    borderRadius: 16,
-    padding: 24,
-    width: "100%",
-    alignItems: "center",
-    marginBottom: 24,
-  },
-  cardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 8,
-  },
-  label: { fontSize: 14, color: "#8C8C8C" },
-
-  // Preparando
-  preparandoContainer: { alignItems: "center", marginVertical: 12 },
-  preparandoTimer: {
-    fontSize: 72,
-    fontWeight: "bold",
-    color: "#FF9800",
-    letterSpacing: 2,
-  },
-  preparandoTexto: {
-    fontSize: 14,
-    color: "#8C8C8C",
-    marginTop: 4,
-    textAlign: "center",
-  },
-
-  codigo: {
-    fontSize: 56,
-    fontWeight: "bold",
-    color: "#F23064",
-    letterSpacing: 8,
-    marginBottom: 12,
-  },
-  instrucao: {
-    fontSize: 14,
-    color: "#8C8C8C",
-    textAlign: "center",
-    marginBottom: 16,
-  },
-  divisor: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "#262626",
-    marginVertical: 12,
-  },
-  resumoTitulo: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    alignSelf: "flex-start",
-    marginBottom: 8,
-  },
-  itemRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginBottom: 4,
-  },
-  itemNome: { color: "#fff", fontSize: 14 },
-  itemPreco: { color: "#8C8C8C", fontSize: 14 },
-  totalLabel: { color: "#fff", fontWeight: "bold", fontSize: 15 },
-  totalValor: { color: "#F23064", fontWeight: "bold", fontSize: 15 },
-  data: { color: "#8C8C8C", fontSize: 12, marginTop: 12, marginBottom: 16 },
-
-  botaoAguardar: {
-    backgroundColor: "#333",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    width: "100%",
-  },
-  botaoAguardarTexto: { color: "#FF9800", fontWeight: "bold", fontSize: 15 },
-  botaoConcluir: {
-    backgroundColor: "#4CAF50",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    width: "100%",
-  },
-  botaoConcluirTexto: { color: "#fff", fontWeight: "bold", fontSize: 15 },
-  botaoConcluido: {
-    backgroundColor: "#333",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    width: "100%",
-  },
-  botaoConcluidoTexto: { color: "#8C8C8C", fontWeight: "bold", fontSize: 15 },
-
-  vazioContainer: { alignItems: "center", marginBottom: 24 },
-  vazioTexto: { color: "#8C8C8C", fontSize: 18, marginBottom: 8 },
-  vazioSub: { color: "#404040", fontSize: 14 },
-
-  historicoContainer: {},
-  historicoTitulo: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#8C8C8C",
-    marginBottom: 10,
-  },
-  historicoItem: {
-    backgroundColor: "#404040",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  historicoItemSelecionado: { borderColor: "#F23064" },
-  historicoLeft: { flex: 1 },
-  historicoCodigo: { color: "#F23064", fontWeight: "bold", fontSize: 13 },
-  historicoNomes: { color: "#fff", fontSize: 13, marginTop: 2 },
-  historicoData: { color: "#8C8C8C", fontSize: 11, marginTop: 2 },
-  historicoRight: { alignItems: "flex-end", gap: 6 },
-  historicoTotal: { color: "#fff", fontWeight: "bold", fontSize: 13 },
-  statusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12 },
-  statusPreparando: { backgroundColor: "#FF9800" },
-  statusAtivo: { backgroundColor: "#4CAF50" },
-  statusConcluido: { backgroundColor: "#8C8C8C" },
-  statusTexto: { color: "#fff", fontSize: 11, fontWeight: "bold" },
-});
+const makeStyles = (c) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: c.background },
+    scrollContent: { padding: 16, paddingBottom: 32 },
+    titulo: {
+      fontSize: 28,
+      fontWeight: "bold",
+      color: c.primary,
+      marginBottom: 16,
+      textAlign: "center",
+    },
+    card: {
+      backgroundColor: c.surface,
+      borderRadius: 16,
+      padding: 24,
+      width: "100%",
+      alignItems: "center",
+      marginBottom: 24,
+      elevation: 3,
+    },
+    cardHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%",
+      marginBottom: 8,
+    },
+    label: { fontSize: 14, color: c.textSecondary },
+    preparandoContainer: { alignItems: "center", marginVertical: 12 },
+    preparandoTimer: {
+      fontSize: 72,
+      fontWeight: "bold",
+      color: "#FF9800",
+      letterSpacing: 2,
+    },
+    preparandoTexto: {
+      fontSize: 14,
+      color: c.textSecondary,
+      marginTop: 4,
+      textAlign: "center",
+    },
+    codigo: {
+      fontSize: 56,
+      fontWeight: "bold",
+      color: c.primary,
+      letterSpacing: 8,
+      marginBottom: 12,
+    },
+    instrucao: {
+      fontSize: 14,
+      color: c.textSecondary,
+      textAlign: "center",
+      marginBottom: 16,
+    },
+    divisor: {
+      width: "100%",
+      height: 1,
+      backgroundColor: c.divisor,
+      marginVertical: 12,
+    },
+    resumoTitulo: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: c.text,
+      alignSelf: "flex-start",
+      marginBottom: 8,
+    },
+    itemRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: "100%",
+      marginBottom: 4,
+    },
+    itemNome: { color: c.text, fontSize: 14 },
+    itemPreco: { color: c.textSecondary, fontSize: 14 },
+    totalLabel: { color: c.text, fontWeight: "bold", fontSize: 15 },
+    totalValor: { color: c.primary, fontWeight: "bold", fontSize: 15 },
+    data: { color: c.textSecondary, fontSize: 12, marginTop: 12, marginBottom: 16 },
+    botaoAguardar: {
+      backgroundColor: c.waitButton,
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: "center",
+      width: "100%",
+    },
+    botaoAguardarTexto: { color: c.waitButtonText, fontWeight: "bold", fontSize: 15 },
+    botaoConcluir: {
+      backgroundColor: "#4CAF50",
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: "center",
+      width: "100%",
+    },
+    botaoConcluirTexto: { color: "#fff", fontWeight: "bold", fontSize: 15 },
+    botaoConcluido: {
+      backgroundColor: c.concludedButton,
+      paddingVertical: 12,
+      borderRadius: 8,
+      alignItems: "center",
+      width: "100%",
+    },
+    botaoConcluidoTexto: { color: c.concludedText, fontWeight: "bold", fontSize: 15 },
+    vazioContainer: { alignItems: "center", marginBottom: 24 },
+    vazioTexto: { color: c.textSecondary, fontSize: 18, marginBottom: 8 },
+    vazioSub: { color: c.disabled, fontSize: 14 },
+    historicoContainer: {},
+    historicoTitulo: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: c.textSecondary,
+      marginBottom: 10,
+    },
+    historicoItem: {
+      backgroundColor: c.surface,
+      borderRadius: 8,
+      padding: 12,
+      marginBottom: 8,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderWidth: 2,
+      borderColor: "transparent",
+      elevation: 2,
+    },
+    historicoItemSelecionado: { borderColor: c.primary },
+    historicoLeft: { flex: 1 },
+    historicoCodigo: { color: c.primary, fontWeight: "bold", fontSize: 13 },
+    historicoNomes: { color: c.text, fontSize: 13, marginTop: 2 },
+    historicoData: { color: c.textSecondary, fontSize: 11, marginTop: 2 },
+    historicoRight: { alignItems: "flex-end", gap: 6 },
+    historicoTotal: { color: c.text, fontWeight: "bold", fontSize: 13 },
+    statusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 12 },
+    statusPreparando: { backgroundColor: "#FF9800" },
+    statusAtivo: { backgroundColor: "#4CAF50" },
+    statusConcluido: { backgroundColor: c.disabled },
+    statusTexto: { color: "#fff", fontSize: 11, fontWeight: "bold" },
+  });
