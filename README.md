@@ -13,7 +13,7 @@ Aplicativo mobile de pedidos para a cantina da FIAP, desenvolvido como projeto a
 
 O **FIAP Kitchenet** permite que alunos realizem pedidos de lanches, bebidas e doces diretamente pelo celular, acompanhem o preparo em tempo real, retirem no balcão usando um código gerado automaticamente e personalizem a interface com tema claro ou escuro.
 
-🎥 **Vídeo de demonstração:** https://youtube.com/shorts/7Cu7EE4myg8?feature=share
+🎥 **Vídeo de demonstração:** https://www.youtube.com/watch?v=MJMegTU_jIQ
 
 ---
 
@@ -196,11 +196,11 @@ npx expo start
 
 | Integrante | Branch | Contribuição |
 |---|---|---|
-| Fernando Moraes | `Fernando` | Estrutura base, Login, Cardápio, Carrinho, Tema claro/escuro, Notificações |
-| Weslley | `Weslley` | Seção "Finalizar Pedido" com modal de pagamento |
-| Guilherme | `Guilherme` | Integração dos pedidos com a seção "Perfil" |
-| Bruna | `Bruna` | Seção "Retirada" com código do pedido e timer de preparo |
-| Gabriel | `Gabriel` | Documentação |
+| Fernando Moraes | `Fernando` | Estrutura base, Login, Cardápio, AsyncStorage , Notificações |
+| Weslley | `Weslley` | React Context |
+| Guilherme | `Guilherme` | Carrinho |
+| Bruna | `Bruna` | Documentação |
+| Gabriel | `Gabriel` | Tema Claro e Escuro |
 
 ---
 
